@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Event Management</string>
+    <string name="content_desc_profile_avatar">Profile avatar</string>
+    <string name="content_desc_notifications">Notifications</string>
+    <string name="content_desc_settings">Open settings</string>
+    <string name="content_desc_refresh">Refresh events</string>
+    <string name="content_desc_no_events">No events illustration</string>
+    <string name="content_desc_event_cover">Event cover photo</string>
 </resources>

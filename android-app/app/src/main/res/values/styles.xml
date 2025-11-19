@@ -9,4 +9,11 @@
         <item name="startIconTint">@null</item>
         <item name="boxStrokeColor">@color/login_text_input_box_stroke</item>
     </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <!-- Remove the underline -->
+        <item name="android:background">@drawable/search_bar_background</item> <!-- Ensure your custom background is applied -->
+        <item name="queryBackground">@null</item> <!-- Might also help in some cases -->
+        <item name="submitBackground">@null</item> <!-- Might also help in some cases -->
+    </style>
 </resources>

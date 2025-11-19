@@ -8,7 +8,7 @@
     android:padding="24dp"
     android:background="#FFFFFF"
     android:id="@+id/login"
-    tools:context=".LoginActivity">
+    tools:context=".ui.auth.LoginActivity">
 
 <!--    icon-->
     <ImageView

@@ -7,61 +7,84 @@
     android:layout_height="match_parent"
     android:background="#F7F8FA"
     android:id="@+id/organizer_dashboard"
-    tools:context=".OrganizerDashboardFragment">
+    tools:context=".ui.organizer.OrganizerDashboardFragment">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/user_avatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_user_placeholder"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.SmallComponent"
+<!--    panel user-->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/user_info_panel_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="#D1E5FF"
-        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"/>
-
-    <TextView
-        android:id="@+id/label_admin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Admin Event"
-        android:textSize="12sp"
-        android:layout_marginStart="12dp"
-        app:layout_constraintStart_toEndOf="@id/user_avatar"
-        app:layout_constraintTop_toTopOf="@id/user_avatar" />
-
-    <TextView
-        android:id="@+id/user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Quoc Xanh"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        app:layout_constraintStart_toStartOf="@id/label_admin"
-        app:layout_constraintTop_toBottomOf="@id/label_admin" />
-
-    <ImageView
-        android:id="@+id/icon_settings"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/ic_settings"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/user_avatar"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardBackgroundColor="#D1E5FF">
 
-    <ImageView
-        android:id="@+id/icon_notifications"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/ic_notifications"
-        app:layout_constraintEnd_toStartOf="@id/icon_settings"
-        app:layout_constraintTop_toTopOf="@id/icon_settings"
-        app:layout_constraintBottom_toBottomOf="@id/icon_settings"
-        android:layout_marginEnd="16dp"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/user_info_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/user_avatar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_user_placeholder"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.SmallComponent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"/>
+
+            <TextView
+                android:id="@+id/label_admin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Admin Event"
+                android:textSize="12sp"
+                android:layout_marginStart="12dp"
+                app:layout_constraintStart_toEndOf="@id/user_avatar"
+                app:layout_constraintTop_toTopOf="@id/user_avatar" />
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quoc Xanh"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                app:layout_constraintStart_toStartOf="@id/label_admin"
+                app:layout_constraintTop_toBottomOf="@id/label_admin" />
+
+            <ImageView
+                android:id="@+id/icon_settings"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_circle_outline"
+                android:padding="8dp"
+                android:src="@drawable/ic_settings"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/user_avatar" />
+
+            <ImageView
+                android:id="@+id/icon_notifications"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/bg_circle_outline"
+                android:padding="8dp"
+                android:src="@drawable/ic_notifications"
+                app:layout_constraintEnd_toStartOf="@id/icon_settings"
+                app:layout_constraintTop_toTopOf="@id/icon_settings"
+                app:layout_constraintBottom_toBottomOf="@id/icon_settings" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/title_text"
@@ -74,8 +97,9 @@
         android:layout_marginTop="24dp"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_avatar" />
+        app:layout_constraintTop_toBottomOf="@id/user_info_panel_card" />
 
+<!--    ô tìm kiếm-->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
         android:layout_width="0dp"
@@ -90,7 +114,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginEnd="16dp"
+    />
 
     <TextView
         android:id="@+id/info_text"
@@ -105,6 +130,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_view" />
 
+<!--    nút lọc-->
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/toggle_button_group"
         android:layout_width="0dp"
@@ -115,6 +141,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:singleSelection="true"
         app:checkedButton="@id/btn_on_going"
+        app:layout_constraintWidth_percent="0.7"
+        app:layout_constraintHorizontal_bias="0.5"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp">
 
@@ -122,10 +150,10 @@
             android:id="@+id/btn_on_going"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="On Going"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/btn_finish"
@@ -138,24 +166,34 @@
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
+<!--    phần hiển thị các sự kiện-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/events_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp" android:layout_marginTop="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_event_card"
-        tools:itemCount="5"
-
-        app:layout_constraintTop_toBottomOf="@id/toggle_button_group"
-        app:layout_constraintBottom_toBottomOf="parent"
-
-        android:paddingBottom="80dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         android:clipToPadding="false"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
+        android:paddingBottom="80dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toggle_button_group"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_event_card" />
 
-        />
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No events available."
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/toggle_button_group"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
+<!--    nút tạo sự kiện-->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_create_event"
         android:layout_width="wrap_content"

@@ -1,31 +1,9 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Nov 19, 2025 at 11:19 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+CREATE DATABASE IF NOT EXISTS qlsk;
+USE qlsk;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `qlsk`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `artist`
---
 
 CREATE TABLE `artist` (
   `Artist_ID` varchar(20) NOT NULL,
@@ -200,7 +178,7 @@ CREATE TABLE `purchasedticket` (
   `User_ID` varchar(20) DEFAULT NULL,
   `Date_Purchase` datetime DEFAULT current_timestamp(),
   `QR_Code` varchar(255) DEFAULT NULL,
-  `CheckIn_Status` tinyint(1) DEFAULT 0 COMMENT '0: Chưa checkin, 1: Đã checkin'
+  `CheckIn_Status` tinyint(1) DEFAULT 0 COMMENT '0: Chưa checkin, 1: Đã checkin's
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
