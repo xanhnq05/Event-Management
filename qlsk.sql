@@ -9,24 +9,25 @@ CREATE TABLE `artist` (
   `Artist_ID` varchar(20) NOT NULL,
   `Artist_Name` varchar(255) NOT NULL,
   `Email` varchar(100) DEFAULT NULL,
-  `Phone` varchar(20) DEFAULT NULL
+  `Phone` varchar(20) DEFAULT NULL,
+  `Image_URL` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `artist`
 --
 
-INSERT INTO `artist` (`Artist_ID`, `Artist_Name`, `Email`, `Phone`) VALUES
-('NS01', 'Sơn Tùng MTP', 'nguyenthanhtung@gmail.com', '0895623166'),
-('NS02', 'Quang Hùng Master D', 'hung@gmail.com', '0865923652'),
-('NS03', 'Mono', 'mono@gmail.com', '0956235641'),
-('NS04', 'Hiếu Thứ 2', 'tranminhieu@gmail.com', '0956235413'),
-('NS05', 'Andree Right Hand', 'andree@gmail.com', '0956321465'),
-('NS06', 'Soobin Hoàng Sơn', 'soobin@gmail.com', '0948562130'),
-('NS07', 'Phương Ly', 'phuongly@gmail.com', '0945625896'),
-('NS08', 'Lyly', 'nguyenhoangly@gmail.com', '0941235123'),
-('NS09', 'Bích Phương', 'bichphuong@gmail.com', '0984561356'),
-('NS10', 'Jack - J97', 'trinhtranphuongtuan@gmail.com', '0948253165');
+INSERT INTO `artist` (`Artist_ID`, `Artist_Name`, `Email`, `Phone`, `Image_URL`) VALUES
+('NS01', 'Sơn Tùng MTP', 'nguyenthanhtung@gmail.com', '0895623166', NULL),
+('NS02', 'Quang Hùng Master D', 'hung@gmail.com', '0865923652', NULL),
+('NS03', 'Mono', 'mono@gmail.com', '0956235641', NULL),
+('NS04', 'Hiếu Thứ 2', 'tranminhieu@gmail.com', '0956235413', NULL),
+('NS05', 'Andree Right Hand', 'andree@gmail.com', '0956321465', NULL),
+('NS06', 'Soobin Hoàng Sơn', 'soobin@gmail.com', '0948562130', NULL),
+('NS07', 'Phương Ly', 'phuongly@gmail.com', '0945625896', NULL),
+('NS08', 'Lyly', 'nguyenhoangly@gmail.com', '0941235123', NULL),
+('NS09', 'Bích Phương', 'bichphuong@gmail.com', '0984561356', NULL),
+('NS10', 'Jack - J97', 'trinhtranphuongtuan@gmail.com', '0948253165', NULL);
 
 -- --------------------------------------------------------
 
@@ -76,9 +77,11 @@ CREATE TABLE `event` (
   `Event_Name` varchar(255) NOT NULL,
   `Description` text DEFAULT NULL,
   `Start_DateTime` datetime DEFAULT NULL,
+  `End_DateTime` datetime DEFAULT NULL,
   `Price_Ticket` decimal(10,2) DEFAULT NULL,
   `Quantity` int(11) DEFAULT NULL,
-  `Venue_ID` varchar(20) DEFAULT NULL,
+  `Address` varchar(255) DEFAULT NULL,
+  `Image_URL` varchar(500) DEFAULT NULL,
   `User_ID` varchar(20) DEFAULT NULL,
   `Category_ID` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -87,17 +90,17 @@ CREATE TABLE `event` (
 -- Dumping data for table `event`
 --
 
-INSERT INTO `event` (`Event_ID`, `Event_Name`, `Description`, `Start_DateTime`, `Price_Ticket`, `Quantity`, `Venue_ID`, `User_ID`, `Category_ID`) VALUES
-('SK01', 'Lễ hội âm nhạc', 'Lễ hội âm nhạc quy tụ rất nhiều các tiết mục âm nhạc đặc sắc cùng với đó là màn hòa tấu của tất cả các loại nhạc cụ khác nhau.', '2025-11-21 23:45:00', 1000000.00, 200, 'D02', 'ND01', 'DM02'),
-('SK02', 'Ẩm thực đường phố', 'Nơi quy tụ các món ăn đa dạng khác nhau đến từ các vùng miền khác nhau trên cả nước.', '2025-11-28 23:45:00', 1000000.00, 250, 'D01', 'ND02', 'DM01'),
-('SK03', 'Ca nhạc và pháo hoa chào đón năm mới 2026', 'Đêm nhạc bùng nổ cùng với màn biểu diễn pháo hoa chào đón năm mới 2026.', '2025-12-31 23:48:09', 5000000.00, 500, 'D02', 'ND03', 'DM05'),
-('Sk04', 'Biểu diễn drone nghệ thuật', 'Màn biểu diễn hàng ngàn thiết bị bay drone vô cùng độc đáo và sáng tạo.', '2025-12-03 23:48:09', 1000000.00, 500, 'D02', 'ND04', 'DM12'),
-('SK05', 'Ngày hội việc làm', 'Tạo điều kiện cho các bạn sinh viên có cơ hội được tham gia thực tập, trao đổi các kinh nghiệm và có được những kiến thức bổ ích.', '2025-11-29 23:52:37', 1000000.00, 600, 'D05', 'ND05', 'DM16'),
-('SK06', 'Biểu diễn nhạc nước nghệ thuật', 'Một sự kiện đáng được chờ đợi cùng màn kết hợp nhạc nước được hòa tấu theo phong cách hiện đại và nhịp nhàng.', '2025-12-04 23:52:37', 1000000.00, 450, 'D02', 'ND06', 'DM12'),
-('SK07', 'Halloween đường phố', 'Ngày hội hóa trang của tất cả mọi người trên thế giới, mang đến nhiều phiên bản cosplay mang đậm tính kinh dị.', '2025-12-02 23:56:42', 5000000.00, 300, 'D04', 'ND01', 'DM10'),
-('SK08', 'Ngày hội đua thuyền', 'Sức mạnh tập thể là thứ có thể đánh bại mọi thứ, cùng chờ đợi màn so tài trên sông vô cùng kịch tính.', '2025-12-04 23:56:42', 5000000.00, 450, 'D01', 'ND02', 'DM11'),
-('SK09', 'Chương trình chào đón năm mới 2026', 'Những màn bắn phóa hoa vô cùng rực rỡ, đẹp mắt mang đến màn kết hợp vô vùng rực rỡ.', '2025-12-31 00:00:03', 5000000.00, 300, 'D02', 'ND03', 'DM17'),
-('SK10', 'Ngày hội giáng sinh', 'Giáng sinh mang đến sự ấm áp, trong lành cũng những tiếng lắng động của tuyết.', '2025-12-25 23:56:42', 5000000.00, 450, 'D06', 'ND04', 'DM05');
+INSERT INTO `event` (`Event_ID`, `Event_Name`, `Description`, `Start_DateTime`, `End_DateTime`, `Price_Ticket`, `Quantity`, `Address`, `Image_URL`, `User_ID`, `Category_ID`) VALUES
+('SK01', 'Lễ hội âm nhạc', 'Lễ hội âm nhạc quy tụ rất nhiều các tiết mục âm nhạc đặc sắc cùng với đó là màn hòa tấu của tất cả các loại nhạc cụ khác nhau.', '2025-11-21 23:45:00', '2025-11-22 02:00:00', 1000000.00, 200, 'Phố Đi Bộ Nguyễn Huệ, Quận 01, Thành Phố Hồ Chí Minh', NULL, 'ND01', 'DM02'),
+('SK02', 'Ẩm thực đường phố', 'Nơi quy tụ các món ăn đa dạng khác nhau đến từ các vùng miền khác nhau trên cả nước.', '2025-11-28 23:45:00', '2025-11-29 23:45:00', 1000000.00, 250, 'Công viên bến Bạch Đằng, Quận 01, Thành Phố Hồ Chí Minh', NULL, 'ND02', 'DM01'),
+('SK03', 'Ca nhạc và pháo hoa chào đón năm mới 2026', 'Đêm nhạc bùng nổ cùng với màn biểu diễn pháo hoa chào đón năm mới 2026.', '2025-12-31 23:48:09', '2026-01-01 01:00:00', 5000000.00, 500, 'Phố Đi Bộ Nguyễn Huệ, Quận 01, Thành Phố Hồ Chí Minh', NULL, 'ND03', 'DM05'),
+('Sk04', 'Biểu diễn drone nghệ thuật', 'Màn biểu diễn hàng ngàn thiết bị bay drone vô cùng độc đáo và sáng tạo.', '2025-12-03 23:48:09', '2025-12-04 00:30:00', 1000000.00, 500, 'Phố Đi Bộ Nguyễn Huệ, Quận 01, Thành Phố Hồ Chí Minh', NULL, 'ND04', 'DM12'),
+('SK05', 'Ngày hội việc làm', 'Tạo điều kiện cho các bạn sinh viên có cơ hội được tham gia thực tập, trao đổi các kinh nghiệm và có được những kiến thức bổ ích.', '2025-11-29 23:52:37', '2025-11-30 17:00:00', 1000000.00, 600, 'Trường Đại Học Tôn Đức Thắng, Đường Nguyễn Hữu Thọ, Phường Tân Hưng, Quận 07, Thành Phố Hồ Chí Minh', NULL, 'ND05', 'DM16'),
+('SK06', 'Biểu diễn nhạc nước nghệ thuật', 'Một sự kiện đáng được chờ đợi cùng màn kết hợp nhạc nước được hòa tấu theo phong cách hiện đại và nhịp nhàng.', '2025-12-04 23:52:37', '2025-12-05 00:30:00', 1000000.00, 450, 'Phố Đi Bộ Nguyễn Huệ, Quận 01, Thành Phố Hồ Chí Minh', NULL, 'ND06', 'DM12'),
+('SK07', 'Halloween đường phố', 'Ngày hội hóa trang của tất cả mọi người trên thế giới, mang đến nhiều phiên bản cosplay mang đậm tính kinh dị.', '2025-12-02 23:56:42', '2025-12-03 02:00:00', 5000000.00, 300, 'Công viên nước Đầm Sen, Quận 10, Thành Phố Hồ Chí Minh', NULL, 'ND01', 'DM10'),
+('SK08', 'Ngày hội đua thuyền', 'Sức mạnh tập thể là thứ có thể đánh bại mọi thứ, cùng chờ đợi màn so tài trên sông vô cùng kịch tính.', '2025-12-04 23:56:42', '2025-12-05 18:00:00', 5000000.00, 450, 'Công viên bến Bạch Đằng, Quận 01, Thành Phố Hồ Chí Minh', NULL, 'ND02', 'DM11'),
+('SK09', 'Chương trình chào đón năm mới 2026', 'Những màn bắn phóa hoa vô cùng rực rỡ, đẹp mắt mang đến màn kết hợp vô vùng rực rỡ.', '2025-12-31 00:00:03', '2026-01-01 01:00:00', 5000000.00, 300, 'Phố Đi Bộ Nguyễn Huệ, Quận 01, Thành Phố Hồ Chí Minh', NULL, 'ND03', 'DM17'),
+('SK10', 'Ngày hội giáng sinh', 'Giáng sinh mang đến sự ấm áp, trong lành cũng những tiếng lắng động của tuyết.', '2025-12-25 23:56:42', '2025-12-26 02:00:00', 5000000.00, 450, 'Dinh Độc Lập, Đường Nam Kỳ Khởi Nghĩa, Phường Bến Thành, Thành Phố Hồ Chí Minh', NULL, 'ND04', 'DM05');
 
 -- --------------------------------------------------------
 
@@ -178,7 +181,7 @@ CREATE TABLE `purchasedticket` (
   `User_ID` varchar(20) DEFAULT NULL,
   `Date_Purchase` datetime DEFAULT current_timestamp(),
   `QR_Code` varchar(255) DEFAULT NULL,
-  `CheckIn_Status` tinyint(1) DEFAULT 0 COMMENT '0: Chưa checkin, 1: Đã checkin's
+  `CheckIn_Status` tinyint(1) DEFAULT 0 COMMENT '0: Chưa checkin, 1: Đã checkin'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -244,6 +247,9 @@ CREATE TABLE `user` (
   `Sex` varchar(10) DEFAULT NULL,
   `Address` varchar(255) DEFAULT NULL,
   `Phone` varchar(20) DEFAULT NULL,
+  `Gmail` varchar(100) DEFAULT NULL,
+  `Avatar_URL` varchar(500) DEFAULT NULL,
+  `Amount` decimal(15,2) DEFAULT 0.00,
   `Account` varchar(100) DEFAULT NULL,
   `Password` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -252,39 +258,15 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`User_ID`, `FullName`, `Birthday`, `Sex`, `Address`, `Phone`, `Account`, `Password`) VALUES
-('ND01', 'Võ Thái Tuấn', '2015-11-09', 'Nam', 'Quận 06, Thành Phố Hồ Chí Minh', '0899506263', NULL, NULL),
-('ND02', 'Nguyễn Quốc Xanh', '2016-11-16', 'Nam', 'Nhà Bè, Thành Phố Hồ Chí Minh', '0846521263', NULL, NULL),
-('ND03', 'Nguyễn Thanh Tú', '2017-11-08', 'Nam', 'Nhà Bè, Thành Phố Hồ Chí Minh', '0863263564', NULL, NULL),
-('ND04', 'Phan Tuấn Vỹ', '2016-11-23', 'Nam', 'Quận 07, Thành Phố Hồ Chí Minh', '0862456352', NULL, NULL),
-('ND05', 'Nguyễn Thanh Tùng', '2016-11-16', 'Nam', 'Quận 01, Thành Phố Hồ Chí Minh', '0923556413', NULL, NULL),
-('ND06', 'Nguyễn Ngọc Minh Thư', '2016-11-23', 'Nữ', 'Quận Thủ Đức, Thành Phố Hồ Chí Minh', '0987643261', NULL, NULL);
+INSERT INTO `user` (`User_ID`, `FullName`, `Birthday`, `Sex`, `Address`, `Phone`, `Gmail`, `Avatar_URL`, `Amount`, `Account`, `Password`) VALUES
+('ND01', 'Võ Thái Tuấn', '2015-11-09', 'Nam', 'Quận 06, Thành Phố Hồ Chí Minh', '0899506263', 'vothaituan@gmail.com', NULL, 0.00, 'vothaituan', '123456'),
+('ND02', 'Nguyễn Quốc Xanh', '2016-11-16', 'Nam', 'Nhà Bè, Thành Phố Hồ Chí Minh', '0846521263', 'nguyenquocxanh@gmail.com', NULL, 0.00, 'nguyenquocxanh', '123456'),
+('ND03', 'Nguyễn Thanh Tú', '2017-11-08', 'Nam', 'Nhà Bè, Thành Phố Hồ Chí Minh', '0863263564', 'nguyenthanhtu@gmail.com', NULL, 0.00, 'nguyenthanhtu', '123456'),
+('ND04', 'Phan Tuấn Vỹ', '2016-11-23', 'Nam', 'Quận 07, Thành Phố Hồ Chí Minh', '0862456352', 'phantuanvy@gmail.com', NULL, 0.00, 'phantuanvy', '123456'),
+('ND05', 'Nguyễn Thanh Tùng', '2016-11-16', 'Nam', 'Quận 01, Thành Phố Hồ Chí Minh', '0923556413', 'nguyenthanhtung@gmail.com', NULL, 0.00, 'nguyenthanhtung', '123456'),
+('ND06', 'Nguyễn Ngọc Minh Thư', '2016-11-23', 'Nữ', 'Quận Thủ Đức, Thành Phố Hồ Chí Minh', '0987643261', 'nguyenngocminhthu@gmail.com', NULL, 0.00, 'nguyenngocminhthu', '123456');
 
 -- --------------------------------------------------------
-
---
--- Table structure for table `venue`
---
-
-CREATE TABLE `venue` (
-  `Venue_ID` varchar(20) NOT NULL,
-  `Venue_Name` varchar(255) NOT NULL,
-  `Address` varchar(255) DEFAULT NULL,
-  `City` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `venue`
---
-
-INSERT INTO `venue` (`Venue_ID`, `Venue_Name`, `Address`, `City`) VALUES
-('D01', 'Công viên bến Bạch Đằng', 'Quận 01, Thành Phố Hồ Chí Minh', 'Thành Phố Hồ Chí Minh'),
-('D02', 'Phố Đi Bộ Nguyễn Huệ', 'Quận 01, Thành Phố Hồ Chí Minh', 'Thành Phố Hồ Chí Minh'),
-('D03', 'Sân vận động Thống Nhất', 'Đường Thống Nhất, Quận 10, Thành Phố Hồ Chí Minh', 'Thành Phố Hồ Chí Minh'),
-('D04', 'Công viên nước Đầm Sen', 'Quận 10, Thành Phố Hồ Chí Minh', 'Thành Phố Hồ Chí Minh'),
-('D05', 'Trường Đại Học Tôn Đức Thắng', 'Đường Nguyễn Hữu Thọ, Phường Tân Hưng, Quận 07, Thành Phố Hồ Chí Minh', 'Thành Phố Hồ Chí Minh'),
-('D06', 'Dinh Độc Lập', 'Đường Nam Kỳ Khởi Nghĩa, Phường Bến Thành, Thành Phố Hồ Chí Minh', 'Thành Phố Hồ Chí Minh'),
-('D07', 'Sân Vận Động Quân Khu 7', 'Đường Hoàng Văn Thụ, Phường Tân Hòa, Thành Phố Hồ Chí Minh', 'Thành Phố Hồ Chí Minh');
 
 --
 -- Indexes for dumped tables
@@ -307,7 +289,6 @@ ALTER TABLE `category`
 --
 ALTER TABLE `event`
   ADD PRIMARY KEY (`Event_ID`),
-  ADD KEY `Venue_ID` (`Venue_ID`),
   ADD KEY `User_ID` (`User_ID`),
   ADD KEY `Category_ID` (`Category_ID`);
 
@@ -342,12 +323,6 @@ ALTER TABLE `user`
   ADD UNIQUE KEY `Account` (`Account`);
 
 --
--- Indexes for table `venue`
---
-ALTER TABLE `venue`
-  ADD PRIMARY KEY (`Venue_ID`);
-
---
 -- Constraints for dumped tables
 --
 
@@ -355,9 +330,8 @@ ALTER TABLE `venue`
 -- Constraints for table `event`
 --
 ALTER TABLE `event`
-  ADD CONSTRAINT `event_ibfk_1` FOREIGN KEY (`Venue_ID`) REFERENCES `venue` (`Venue_ID`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `event_ibfk_2` FOREIGN KEY (`User_ID`) REFERENCES `user` (`User_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `event_ibfk_3` FOREIGN KEY (`Category_ID`) REFERENCES `category` (`Category_ID`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `event_ibfk_1` FOREIGN KEY (`User_ID`) REFERENCES `user` (`User_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `event_ibfk_2` FOREIGN KEY (`Category_ID`) REFERENCES `category` (`Category_ID`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `eventartist`

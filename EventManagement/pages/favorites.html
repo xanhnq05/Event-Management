@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sự kiện yêu thích - EventHub</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/index.html" class="logo">
+                <svg class="logo-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span>EventHub</span>
+            </a>
+            
+            <nav>
+                <a href="/index.html">Trang chủ</a>
+                <a href="/pages/events.html">Sự kiện</a>
+                <a href="/pages/events.html" id="create-event-link" style="display: none;">Tạo sự kiện</a>
+                <a href="/pages/favorites.html" id="favorites-link" style="display: none;">Yêu thích</a>
+                <a href="/pages/tickets.html" id="tickets-link" style="display: none;">Vé của tôi</a>
+                
+                <div id="user-menu" class="user-menu" style="display: none;">
+                    <span class="user-balance">0 đ</span>
+                    <a href="/pages/wallet.html" class="btn btn-secondary">Ví</a>
+                    <a href="/pages/profile.html" class="user-name">User</a>
+                    <button onclick="handleLogout()" class="btn btn-danger">Đăng xuất</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem;">
+        <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 2rem;">Sự kiện yêu thích</h1>
+
+        <div id="favorites-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Đang tải sự kiện yêu thích...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/events.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!requireAuth()) return;
+            initAuth();
+            
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('create-event-link').style.display = 'block';
+                document.getElementById('favorites-link').style.display = 'block';
+                document.getElementById('tickets-link').style.display = 'block';
+            }
+
+            loadFavorites();
+        });
+
+        async function loadFavorites() {
+            const container = document.getElementById('favorites-container');
+            
+            try {
+                const response = await API.getFavoriteEvents();
+                const events = response.events || response || [];
+                
+                if (events.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 3rem;">
+                            <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--gray-400); margin: 0 auto 1rem;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                            <p style="color: var(--gray-500); font-size: 1.125rem; margin-bottom: 1rem;">Bạn chưa có sự kiện yêu thích nào</p>
+                            <a href="/pages/events.html" class="btn btn-primary">Khám phá sự kiện</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="grid grid-3">
+                        ${events.map(event => createEventCard(event)).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--danger-color);">
+                        <p>Lỗi khi tải sự kiện yêu thích: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function removeFavorite(eventId) {
+            try {
+                await API.toggleFavorite(eventId);
+                showToast('Đã xóa khỏi yêu thích', 'success');
+                loadFavorites();
+            } catch (error) {
+                showToast('Có lỗi xảy ra', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký - EventHub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .register-container {
+            min-height: calc(100vh - 200px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        }
+        .register-card {
+            max-width: 800px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/index.html" class="logo">
+                <svg class="logo-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span>EventHub</span>
+            </a>
+            <nav>
+                <a href="/index.html">Trang chủ</a>
+                <a href="/pages/events.html">Sự kiện</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="register-container">
+        <div class="card register-card">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Đăng ký tài khoản</h1>
+                <p style="color: var(--gray-600);">Tạo tài khoản để bắt đầu khám phá sự kiện</p>
+            </div>
+
+            <form id="register-form" onsubmit="handleRegister(event)">
+                <div class="grid grid-2" style="gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Họ và tên *</label>
+                        <input type="text" id="fullName" class="form-input" placeholder="Nhập họ và tên" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tên đăng nhập *</label>
+                        <input type="text" id="account" class="form-input" placeholder="Nhập tên đăng nhập" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-2" style="gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" id="email" class="form-input" placeholder="example@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Số điện thoại *</label>
+                        <input type="tel" id="phone" class="form-input" placeholder="0123456789" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Địa chỉ</label>
+                    <input type="text" id="address" class="form-input" placeholder="Nhập địa chỉ">
+                </div>
+
+                <div class="grid grid-2" style="gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Ngày sinh</label>
+                        <input type="date" id="birthday" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Giới tính</label>
+                        <select id="sex" class="form-input">
+                            <option value="">Chọn giới tính</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-2" style="gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Mật khẩu *</label>
+                        <input type="password" id="password" class="form-input" placeholder="Nhập mật khẩu" required minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Xác nhận mật khẩu *</label>
+                        <input type="password" id="confirmPassword" class="form-input" placeholder="Nhập lại mật khẩu" required>
+                    </div>
+                </div>
+
+                <div id="error-message" style="display: none; color: var(--danger-color); margin-bottom: 1rem; padding: 0.75rem; background-color: #fee2e2; border-radius: 0.5rem;"></div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Đăng ký
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <p style="font-size: 0.875rem; color: var(--gray-600);">
+                    Đã có tài khoản? 
+                    <a href="/pages/login.html" style="color: var(--primary-color); font-weight: 600;">Đăng nhập ngay</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+</body>
+</html>
+

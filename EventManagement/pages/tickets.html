@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vé của tôi - EventHub</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/index.html" class="logo">
+                <svg class="logo-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span>EventHub</span>
+            </a>
+            
+            <nav>
+                <a href="/index.html">Trang chủ</a>
+                <a href="/pages/events.html">Sự kiện</a>
+                <a href="/pages/events.html" id="create-event-link" style="display: none;">Tạo sự kiện</a>
+                <a href="/pages/favorites.html" id="favorites-link" style="display: none;">Yêu thích</a>
+                <a href="/pages/tickets.html" id="tickets-link" style="display: none;">Vé của tôi</a>
+                
+                <div id="user-menu" class="user-menu" style="display: none;">
+                    <span class="user-balance">0 đ</span>
+                    <a href="/pages/wallet.html" class="btn btn-secondary">Ví</a>
+                    <a href="/pages/profile.html" class="user-name">User</a>
+                    <button onclick="handleLogout()" class="btn btn-danger">Đăng xuất</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem;">
+        <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 2rem;">Vé của tôi</h1>
+
+        <div id="tickets-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Đang tải vé...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>EventHub</h3>
+                <p>Nền tảng quản lý và đặt vé sự kiện hàng đầu Việt Nam</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 EventHub. Tất cả quyền được bảo lưu.</p>
+        </div>
+    </footer>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/payment.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!requireAuth()) return;
+            initAuth();
+            
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('create-event-link').style.display = 'block';
+                document.getElementById('favorites-link').style.display = 'block';
+                document.getElementById('tickets-link').style.display = 'block';
+            }
+
+            const tickets = await loadPurchasedTickets();
+            displayTickets(tickets);
+        });
+    </script>
+</body>
+</html>
+
