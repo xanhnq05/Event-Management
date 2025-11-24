@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo sự kiện - EventHub</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/index.html" class="logo">
+                <svg class="logo-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span>EventHub</span>
+            </a>
+            
+            <nav>
+                <a href="/index.html">Trang chủ</a>
+                <a href="/pages/events.html">Sự kiện</a>
+                <div id="user-menu" class="user-menu" style="display: none;">
+                    <span class="user-balance">0 đ</span>
+                    <a href="/pages/wallet.html" class="btn btn-secondary">Ví</a>
+                    <a href="/pages/profile.html" class="user-name">User</a>
+                    <img id="user-avatar" class="user-avatar" src="" alt="Avatar" style="display: none;" onclick="window.location.href='/pages/profile.html'">
+                    <button onclick="handleLogout()" class="btn btn-danger">Đăng xuất</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem; max-width: 1000px;">
+        <h1 id="page-title" style="font-size: 2rem; font-weight: bold; margin-bottom: 2rem;">Tạo sự kiện mới</h1>
+
+        <form id="create-event-form" onsubmit="handleCreateEvent(event)" class="card">
+            <div class="form-group">
+                <label class="form-label">Tên sự kiện *</label>
+                <input type="text" id="eventName" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Mô tả</label>
+                <textarea id="description" class="form-input" rows="5" style="resize: vertical;"></textarea>
+            </div>
+
+            <div class="grid grid-2" style="gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label">Ngày giờ bắt đầu *</label>
+                    <input type="datetime-local" id="startDateTime" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ngày giờ kết thúc *</label>
+                    <input type="datetime-local" id="endDateTime" class="form-input" required>
+                </div>
+            </div>
+
+            <div class="grid grid-2" style="gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label">Giá vé (VND) *</label>
+                    <input type="number" id="priceTicket" class="form-input" min="0" step="1000" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Số lượng vé *</label>
+                    <input type="number" id="quantity" class="form-input" min="1" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Địa chỉ *</label>
+                <input type="text" id="address" class="form-input" required placeholder="Nhập địa chỉ hoặc chọn trên bản đồ">
+                <div id="map-container" style="margin-top: 1rem; height: 300px; border-radius: 0.5rem; overflow: hidden; border: 1px solid var(--gray-200);">
+                    <div id="map" style="width: 100%; height: 100%;"></div>
+                </div>
+                <button type="button" onclick="openMapPicker()" class="btn btn-secondary" style="margin-top: 0.5rem;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle; margin-right: 0.25rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Chọn vị trí trên bản đồ
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Danh mục *</label>
+                <select id="category" class="form-input" required>
+                    <option value="">Chọn danh mục</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Ảnh sự kiện</label>
+                <input type="file" id="eventImage" accept="image/*" class="form-input">
+                <div id="image-preview" style="margin-top: 0.5rem;"></div>
+            </div>
+
+            <div id="error-message" style="display: none; color: var(--danger-color); margin-bottom: 1rem; padding: 0.75rem; background-color: #fee2e2; border-radius: 0.5rem;"></div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" id="submit-btn" class="btn btn-primary">Tạo sự kiện</button>
+                <a href="/pages/events.html" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </main>
+
+    <!-- Google Maps API - Replace YOUR_API_KEY with your actual Google Maps API key -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu2dqaqFpVGHR2LkwqVo1Xs0AV89EsQog&libraries=places&callback=initGoogleMaps" async defer></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        let categories = [];
+        let eventId = null;
+        let isEditMode = false;
+        let map = null;
+        let marker = null;
+        let geocoder = null;
+        let autocomplete = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!requireAuth()) return;
+            initAuth();
+            
+            // Check if editing existing event
+            eventId = getUrlParameter('id');
+            if (eventId) {
+                isEditMode = true;
+                document.getElementById('page-title').textContent = 'Chỉnh sửa sự kiện';
+                document.getElementById('submit-btn').textContent = 'Cập nhật sự kiện';
+                loadEventForEdit(eventId);
+            }
+            
+            loadCategories();
+            
+            // Google Maps will be initialized via callback when API loads
+            // Check if already loaded (in case callback already fired)
+            if (typeof google !== 'undefined' && google.maps) {
+                console.log('🗺️ Google Maps already loaded, initializing...');
+                initGoogleMaps();
+            } else {
+                // If Google Maps is not loaded yet, it will be initialized via callback
+                console.log('⏳ Waiting for Google Maps API to load...');
+                
+                // Set a timeout to check if API loads (in case callback fails)
+                setTimeout(() => {
+                    if (typeof google === 'undefined' || !google.maps) {
+                        console.error('❌ Google Maps API failed to load after timeout');
+                        showMapError('Google Maps API không thể tải. Vui lòng kiểm tra console để xem lỗi chi tiết.');
+                    }
+                }, 10000); // 10 seconds timeout
+            }
+            
+            // Image preview
+            const imageInput = document.getElementById('eventImage');
+            imageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    console.log('📸 Image selected:', file.name, file.size, 'bytes');
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        document.getElementById('image-preview').innerHTML = `
+                            <img src="${e.target.result}" alt="Event preview" style="width: 100%; max-width: 400px; height: 200px; object-fit: cover; border-radius: 0.5rem; border: 2px solid var(--gray-200);">
+                            <p style="margin-top: 0.5rem; color: var(--gray-600); font-size: 0.875rem;">Ảnh mới đã được chọn</p>
+                        `;
+                        // Remove current-image-url if exists (new image selected)
+                        const currentImageUrl = document.getElementById('current-image-url');
+                        if (currentImageUrl) {
+                            currentImageUrl.remove();
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    console.log('⚠️ No file selected');
+                }
+            });
+            
+            // Handle paste event for image input
+            imageInput.addEventListener('paste', (e) => {
+                const items = e.clipboardData?.items;
+                if (items) {
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].type.indexOf('image') !== -1) {
+                            const blob = items[i].getAsFile();
+                            const file = new File([blob], `pasted-image-${Date.now()}.png`, { type: blob.type });
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(file);
+                            imageInput.files = dataTransfer.files;
+                            
+                            // Trigger change event
+                            const changeEvent = new Event('change', { bubbles: true });
+                            imageInput.dispatchEvent(changeEvent);
+                            
+                            console.log('📋 Image pasted:', file.name);
+                            break;
+                        }
+                    }
+                }
+            });
+        });
+
+        async function loadEventForEdit(eventId) {
+            try {
+                const event = await API.getEventById(eventId);
+                const eventData = event.data || event;
+                
+                // Fill form with event data
+                document.getElementById('eventName').value = eventData.Event_Name || '';
+                document.getElementById('description').value = eventData.Description || '';
+                
+                // Format datetime for input
+                if (eventData.Start_DateTime) {
+                    const startDate = new Date(eventData.Start_DateTime);
+                    document.getElementById('startDateTime').value = startDate.toISOString().slice(0, 16);
+                }
+                if (eventData.End_DateTime) {
+                    const endDate = new Date(eventData.End_DateTime);
+                    document.getElementById('endDateTime').value = endDate.toISOString().slice(0, 16);
+                }
+                
+                document.getElementById('priceTicket').value = eventData.Price_Ticket || '';
+                document.getElementById('quantity').value = eventData.Quantity || '';
+                document.getElementById('address').value = eventData.Address || '';
+                
+                // Update map if address exists (wait for map to be initialized)
+                if (eventData.Address) {
+                    setTimeout(() => {
+                        if (map && geocoder) {
+                            updateMapFromAddress(eventData.Address);
+                        }
+                    }, 1500);
+                }
+                
+                // Set category after categories are loaded
+                setTimeout(() => {
+                    if (eventData.Category_ID) {
+                        document.getElementById('category').value = eventData.Category_ID;
+                    }
+                }, 500);
+                
+                // Show existing image if available
+                if (eventData.Image_URL) {
+                    document.getElementById('image-preview').innerHTML = `
+                        <img src="${getImageUrl(eventData.Image_URL)}" alt="Event preview" style="width: 100%; max-width: 400px; height: 200px; object-fit: cover; border-radius: 0.5rem; border: 2px solid var(--gray-200);">
+                        <p style="margin-top: 0.5rem; color: var(--gray-600); font-size: 0.875rem;">Ảnh hiện tại (chọn ảnh mới để thay thế)</p>
+                        <input type="hidden" id="current-image-url" value="${eventData.Image_URL}">
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading event for edit:', error);
+                showToast('Không thể tải thông tin sự kiện', 'error');
+                setTimeout(() => {
+                    window.location.href = '/pages/events.html';
+                }, 2000);
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                console.log('📤 Loading categories...');
+                const response = await API.getCategories();
+                console.log('📥 Categories response:', response);
+                
+                // Handle different response structures
+                let categoriesData = [];
+                if (Array.isArray(response)) {
+                    categoriesData = response;
+                } else if (response?.data && Array.isArray(response.data)) {
+                    categoriesData = response.data;
+                } else if (response?.success && response?.data) {
+                    categoriesData = response.data;
+                } else {
+                    console.error('❌ Unexpected response format:', response);
+                    showToast('Định dạng dữ liệu danh mục không hợp lệ', 'error');
+                    return;
+                }
+                
+                categories = categoriesData;
+                const select = document.getElementById('category');
+                
+                // Clear existing options except the first one
+                while (select.children.length > 1) {
+                    select.removeChild(select.lastChild);
+                }
+                
+                if (categories.length === 0) {
+                    console.warn('⚠️ No categories found');
+                    showToast('Không có danh mục nào', 'warning');
+                    return;
+                }
+                
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.Category_ID;
+                    option.textContent = category.Category_Name;
+                    select.appendChild(option);
+                });
+                
+                console.log('✅ Loaded categories:', categories.length);
+            } catch (error) {
+                console.error('❌ Error loading categories:', error);
+                showToast('Không thể tải danh mục: ' + (error.message || 'Lỗi không xác định'), 'error');
+            }
+        }
+
+        async function handleCreateEvent(event) {
+            event.preventDefault();
+            
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.style.display = 'none';
+
+            const formData = {
+                Event_Name: document.getElementById('eventName').value,
+                Description: document.getElementById('description').value,
+                Start_DateTime: document.getElementById('startDateTime').value.replace('T', ' ') + ':00',
+                End_DateTime: document.getElementById('endDateTime').value.replace('T', ' ') + ':00',
+                Price_Ticket: parseFloat(document.getElementById('priceTicket').value),
+                Quantity: parseInt(document.getElementById('quantity').value),
+                Address: document.getElementById('address').value,
+                Category_ID: document.getElementById('category').value,
+            };
+
+            const imageFile = document.getElementById('eventImage').files[0];
+            if (imageFile) {
+                formData.image = imageFile;
+                console.log('📤 Uploading new image:', imageFile.name);
+            } else if (isEditMode) {
+                // If editing and no new image selected, explicitly keep the existing image
+                const currentImageUrl = document.getElementById('current-image-url');
+                if (currentImageUrl && currentImageUrl.value) {
+                    // Don't include image in formData - backend should keep existing
+                    console.log('📋 Keeping existing image:', currentImageUrl.value);
+                }
+            }
+
+            try {
+                let result;
+                if (isEditMode && eventId) {
+                    // Update existing event
+                    result = await API.updateEvent(eventId, formData);
+                    showToast('Cập nhật sự kiện thành công!', 'success');
+                    setTimeout(() => {
+                        window.location.href = `/pages/event-detail.html?id=${eventId}`;
+                    }, 1500);
+                } else {
+                    // Create new event
+                    result = await API.createEvent(formData);
+                    showToast('Tạo sự kiện thành công!', 'success');
+                    setTimeout(() => {
+                        window.location.href = `/pages/event-detail.html?id=${result.Event_ID}`;
+                    }, 1500);
+                }
+            } catch (error) {
+                errorDiv.textContent = error.message || (isEditMode ? 'Cập nhật sự kiện thất bại' : 'Tạo sự kiện thất bại');
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Callback for Google Maps API
+        function initGoogleMaps() {
+            console.log('🗺️ Initializing Google Maps...');
+            if (typeof google !== 'undefined' && google.maps) {
+                console.log('✅ Google Maps API loaded');
+                try {
+                    initMap();
+                    // Wait a bit for map to initialize before setting up autocomplete
+                    setTimeout(() => {
+                        initAddressAutocomplete();
+                    }, 500);
+                    const mapContainer = document.getElementById('map-container');
+                    if (mapContainer) {
+                        mapContainer.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('❌ Error initializing map:', error);
+                    showMapError('Không thể khởi tạo bản đồ: ' + error.message);
+                }
+            } else {
+                console.error('❌ Google Maps API not available');
+                showMapError('Google Maps API chưa được tải. Vui lòng kiểm tra API key và billing account.');
+            }
+        }
+
+        // Show map error message
+        function showMapError(message) {
+            const mapContainer = document.getElementById('map-container');
+            if (mapContainer) {
+                mapContainer.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; color: var(--danger-color); background-color: #fee2e2; border-radius: 0.5rem;">
+                        <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: 0 auto 1rem;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p style="font-weight: 600; margin-bottom: 0.5rem;">Lỗi Google Maps</p>
+                        <p style="font-size: 0.875rem;">${message}</p>
+                        <p style="font-size: 0.75rem; margin-top: 1rem; color: var(--gray-600);">
+                            Vui lòng kiểm tra:<br>
+                            - API key đã được kích hoạt đúng chưa<br>
+                            - Maps JavaScript API đã được bật chưa<br>
+                            - Billing account đã được kích hoạt chưa<br>
+                            - HTTP referrers restrictions (nếu có) đã đúng chưa
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        // Handle Google Maps API load errors
+        window.gm_authFailure = function() {
+            console.error('❌ Google Maps authentication failed');
+            showMapError('API key không hợp lệ hoặc chưa được kích hoạt. Vui lòng kiểm tra lại API key trong Google Cloud Console.');
+        };
+
+        // Initialize Google Map
+        function initMap() {
+            if (typeof google === 'undefined' || !google.maps) {
+                console.error('Google Maps API not loaded');
+                throw new Error('Google Maps API not loaded');
+            }
+
+            const mapElement = document.getElementById('map');
+            if (!mapElement) {
+                console.error('Map element not found');
+                throw new Error('Map element not found');
+            }
+
+            // Default location (Ho Chi Minh City)
+            const defaultLocation = { lat: 10.8231, lng: 106.6297 };
+            
+            try {
+                map = new google.maps.Map(mapElement, {
+                    center: defaultLocation,
+                    zoom: 13,
+                    mapTypeControl: true,
+                    streetViewControl: false,
+                });
+
+                geocoder = new google.maps.Geocoder();
+                marker = new google.maps.Marker({
+                    map: map,
+                    draggable: true,
+                });
+                
+                console.log('✅ Map initialized successfully');
+            } catch (error) {
+                console.error('❌ Error creating map:', error);
+                throw error;
+            }
+
+            // When marker is dragged, update address
+            marker.addListener('dragend', () => {
+                const position = marker.getPosition();
+                geocoder.geocode({ location: position }, (results, status) => {
+                    if (status === 'OK' && results[0]) {
+                        document.getElementById('address').value = results[0].formatted_address;
+                    }
+                });
+            });
+
+            // When map is clicked, move marker and update address
+            map.addListener('click', (event) => {
+                const location = event.latLng;
+                marker.setPosition(location);
+                geocoder.geocode({ location: location }, (results, status) => {
+                    if (status === 'OK' && results[0]) {
+                        document.getElementById('address').value = results[0].formatted_address;
+                    }
+                });
+            });
+
+            // If editing and address exists, geocode it
+            if (isEditMode && document.getElementById('address').value) {
+                updateMapFromAddress(document.getElementById('address').value);
+            }
+        }
+
+        // Initialize address autocomplete
+        function initAddressAutocomplete() {
+            if (typeof google === 'undefined' || !google.maps) {
+                console.error('Google Maps API not loaded');
+                return;
+            }
+
+            if (!google.maps.places) {
+                console.error('Google Maps Places API not loaded. Make sure Places API is enabled in your Google Cloud Console.');
+                // Still allow manual address input
+                return;
+            }
+
+            const addressInput = document.getElementById('address');
+            if (!addressInput) {
+                console.error('Address input not found');
+                return;
+            }
+
+            try {
+                autocomplete = new google.maps.places.Autocomplete(addressInput, {
+                    types: ['geocode', 'establishment'],
+                    componentRestrictions: { country: 'vn' },
+                    fields: ['geometry', 'formatted_address', 'name']
+                });
+
+                autocomplete.addListener('place_changed', () => {
+                    const place = autocomplete.getPlace();
+                    console.log('📍 Place selected:', place);
+                    
+                    if (!place.geometry) {
+                        console.warn('No geometry for selected place');
+                        return;
+                    }
+
+                    // Update map and marker
+                    if (map && marker) {
+                        const location = place.geometry.location;
+                        map.setCenter(location);
+                        map.setZoom(15);
+                        marker.setPosition(location);
+                        console.log('✅ Map updated to:', location.lat(), location.lng());
+                    }
+                });
+
+                console.log('✅ Address autocomplete initialized');
+            } catch (error) {
+                console.error('❌ Error initializing autocomplete:', error);
+            }
+        }
+
+        // Update map from address string
+        function updateMapFromAddress(address) {
+            if (!geocoder || !address || !map) {
+                console.warn('Cannot geocode: missing geocoder, address, or map');
+                return;
+            }
+            
+            console.log('🔍 Geocoding address:', address);
+            geocoder.geocode({ 
+                address: address,
+                componentRestrictions: { country: 'vn' }
+            }, (results, status) => {
+                if (status === 'OK' && results && results.length > 0) {
+                    const location = results[0].geometry.location;
+                    map.setCenter(location);
+                    map.setZoom(15);
+                    if (marker) {
+                        marker.setPosition(location);
+                    }
+                    console.log('✅ Geocoded successfully:', location.lat(), location.lng());
+                } else {
+                    console.error('❌ Geocoding failed:', status);
+                    if (status === 'ZERO_RESULTS') {
+                        showToast('Không tìm thấy địa chỉ này', 'warning');
+                    } else if (status === 'OVER_QUERY_LIMIT') {
+                        showToast('Đã vượt quá giới hạn tìm kiếm. Vui lòng thử lại sau.', 'error');
+                    } else {
+                        showToast('Không thể tìm địa chỉ. Vui lòng thử lại.', 'error');
+                    }
+                }
+            });
+        }
+
+        // Open map picker (focus on map)
+        function openMapPicker() {
+            document.getElementById('map-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // If address is filled, try to geocode it
+            const address = document.getElementById('address').value;
+            if (address) {
+                geocoder.geocode({ address: address }, (results, status) => {
+                    if (status === 'OK' && results[0]) {
+                        const location = results[0].geometry.location;
+                        map.setCenter(location);
+                        map.setZoom(15);
+                        marker.setPosition(location);
+                    }
+                });
+            }
+        }
+
+        // Update map when address is manually entered (after DOM is ready)
+        setTimeout(() => {
+            const addressInput = document.getElementById('address');
+            if (addressInput) {
+                let addressTimeout;
+                
+                // Listen for Enter key to search immediately
+                addressInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const address = addressInput.value.trim();
+                        if (address && geocoder && map) {
+                            updateMapFromAddress(address);
+                        }
+                    }
+                });
+                
+                // Auto-search after user stops typing
+                addressInput.addEventListener('input', () => {
+                    clearTimeout(addressTimeout);
+                    addressTimeout = setTimeout(() => {
+                        const address = addressInput.value.trim();
+                        if (address && address.length > 5 && geocoder && map) {
+                            updateMapFromAddress(address);
+                        }
+                    }, 1500);
+                });
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
+

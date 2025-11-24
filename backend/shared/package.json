@@ -1,0 +1,13 @@
+{
+  "name": "shared-utilities",
+  "version": "1.0.0",
+  "description": "Shared utilities for microservices",
+  "main": "index.js",
+  "dependencies": {
+    "winston": "^3.11.0",
+    "mysql2": "^3.6.5",
+    "redis": "^4.6.12",
+    "nodemailer": "^6.9.7"
+  }
+}
+

@@ -1,0 +1,7 @@
+module.exports = {
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '24h',
+  JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+  SESSION_EXPIRES_HOURS: 24,
+  REFRESH_TOKEN_EXPIRES_DAYS: 7,
+};
+

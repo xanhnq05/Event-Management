@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vé Sự Kiện Điện Tử</title>
+    <style type="text/css">
+        /* CSS Reset cơ bản cho email */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; font-family: Helvetica, Arial, sans-serif; background-color: #f4f4f4; }
+        
+        /* CSS cho các thành phần cụ thể */
+        .ticket-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            overflow: hidden; /* Để bo tròn góc */
+        }
+        .header-banner {
+            background-color: #0056b3; /* Màu chủ đạo của sự kiện */
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .content-body {
+            padding: 30px 20px;
+        }
+        .label {
+            color: #666666;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .value {
+            color: #333333;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: block;
+        }
+        .qr-section {
+            text-align: center;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 2px dashed #cccccc;
+        }
+        .footer {
+            background-color: #f4f4f4;
+            color: #888888;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td align="center" style="padding: 20px 0;">
+                <table border="0" cellpadding="0" cellspacing="0" width="600" class="ticket-container" style="max-width: 600px; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 8px;">
+                    
+                    <tr>
+                        <td class="header-banner" style="background-color: #0056b3; color: #ffffff; padding: 25px; text-align: center;">
+                            <h1 style="margin: 0; font-size: 24px; font-weight: bold;">VÉ THAM DỰ SỰ KIỆN</h1>
+                            </td>
+                    </tr>
+
+                    <tr>
+                        <td class="content-body" style="padding: 30px 20px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td width="65%" valign="top" style="padding-right: 20px;">
+                                        <h2 style="margin-top: 0; color: #0056b3; font-size: 20px;">{{EVENT_NAME}}</h2>
+                                        
+                                        <span class="label" style="color: #666666; font-size: 12px; text-transform: uppercase; display: block;">Khách hàng</span>
+                                        <span class="value" style="color: #333333; font-size: 16px; font-weight: bold; margin-bottom: 15px; display: block;">{{CUSTOMER_NAME}}</span>
+
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td width="50%">
+                                                    <span class="label" style="color: #666666; font-size: 12px; text-transform: uppercase; display: block;">Thời gian</span>
+                                                    <span class="value" style="color: #333333; font-size: 14px; font-weight: bold; margin-bottom: 15px; display: block;">{{EVENT_TIME}}</span>
+                                                </td>
+                                                <td width="50%">
+                                                    <span class="label" style="color: #666666; font-size: 12px; text-transform: uppercase; display: block;">Loại vé</span>
+                                                    <span class="value" style="color: #333333; font-size: 14px; font-weight: bold; margin-bottom: 15px; display: block;">{{TICKET_TYPE}}</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <span class="label" style="color: #666666; font-size: 12px; text-transform: uppercase; display: block;">Địa điểm</span>
+                                        <span class="value" style="color: #333333; font-size: 14px; font-weight: bold; margin-bottom: 15px; display: block;">{{EVENT_LOCATION}}</span>
+                                        
+                                        <span class="label" style="color: #666666; font-size: 12px; text-transform: uppercase; display: block;">Mã đặt chỗ</span>
+                                        <span class="value" style="color: #333333; font-size: 18px; font-weight: bold; color: #d9534f; display: block;">{{BOOKING_CODE}}</span>
+                                    </td>
+
+                                    <td width="35%" valign="middle" align="center">
+                                        <div class="qr-section" style="text-align: center; padding: 15px; background-color: #f9f9f9; border-radius: 8px; border: 2px dashed #cccccc;">
+                                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{QR_DATA_CONTENT}}" 
+                                                 alt="QR Code Vé" 
+                                                 width="150" height="150"
+                                                 style="display: block; border: 0;">
+                                            <p style="margin: 10px 0 0 0; font-size: 11px; color: #666666;">Quét mã để check-in</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="footer" style="background-color: #f4f4f4; color: #888888; padding: 20px; text-align: center; font-size: 12px; border-top: 1px solid #eeeeee;">
+                            <p style="margin: 0;">Vui lòng mang theo vé này (in hoặc trên điện thoại) đến sự kiện.</p>
+                            <p style="margin: 5px 0 0 0;">© 2023 Tên Công Ty Của Bạn. Mọi quyền được bảo lưu.</p>
+                        </td>
+                    </tr>
+
+                </table>
+                </td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán - EventHub</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/index.html" class="logo">
+                <svg class="logo-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span>EventHub</span>
+            </a>
+            
+            <nav>
+                <a href="/index.html">Trang chủ</a>
+                <a href="/pages/events.html">Sự kiện</a>
+                <div id="user-menu" class="user-menu" style="display: none;">
+                    <span class="user-balance">0 đ</span>
+                    <a href="/pages/wallet.html" class="btn btn-secondary">Ví</a>
+                    <a href="/pages/profile.html" class="user-name">User</a>
+                    <img id="user-avatar" class="user-avatar" src="" alt="Avatar" style="display: none;" onclick="window.location.href='/pages/profile.html'">
+                    <button onclick="handleLogout()" class="btn btn-danger">Đăng xuất</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem; max-width: 800px;">
+        <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 2rem;">Thanh toán</h1>
+
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">Thông tin thanh toán</h2>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--gray-600);">Số tiền:</span>
+                    <span style="font-weight: 600; font-size: 1.125rem;" id="payment-amount">0 đ</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--gray-600);">Số dư hiện tại:</span>
+                    <span style="font-weight: 600;" id="current-balance">0 đ</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">Phương thức thanh toán</h2>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--gray-200); border-radius: 0.5rem; cursor: pointer; transition: background-color 0.3s;" 
+                       onmouseover="this.style.backgroundColor='var(--gray-50)'" 
+                       onmouseout="this.style.backgroundColor='transparent'">
+                    <input type="radio" name="payment-method" value="wallet" checked onchange="updatePaymentMethod('wallet')" style="width: 20px; height: 20px;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--primary-color);">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <div style="flex: 1;">
+                        <p style="font-weight: 600;">Ví điện tử</p>
+                        <p style="font-size: 0.875rem; color: var(--gray-600);">Số dư: <span id="wallet-balance">0 đ</span></p>
+                    </div>
+                </label>
+
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--gray-200); border-radius: 0.5rem; cursor: pointer; transition: background-color 0.3s;" 
+                       onmouseover="this.style.backgroundColor='var(--gray-50)'" 
+                       onmouseout="this.style.backgroundColor='transparent'">
+                    <input type="radio" name="payment-method" value="card" onchange="updatePaymentMethod('card')" style="width: 20px; height: 20px;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--primary-color);">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                    </svg>
+                    <div style="flex: 1;">
+                        <p style="font-weight: 600;">Thẻ tín dụng/Ghi nợ</p>
+                        <p style="font-size: 0.875rem; color: var(--gray-600);">Visa, Mastercard</p>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="card" id="payment-form">
+            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">Xác thực OTP</h2>
+            <p style="color: var(--gray-600); margin-bottom: 1rem;">
+                Mã OTP đã được gửi đến email: <strong id="user-email">user@email.com</strong>
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <label class="form-label">Mã OTP</label>
+                    <input type="text" id="otp-input" class="form-input" placeholder="Nhập 6 số OTP" 
+                           maxlength="6" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; font-family: monospace;"
+                           oninput="this.value = this.value.replace(/\D/g, '')">
+                </div>
+
+                <button onclick="handleResendOTP()" class="btn btn-secondary" id="resend-btn">
+                    Gửi lại mã OTP
+                </button>
+
+                <button onclick="handlePayment()" class="btn btn-primary" id="pay-btn" disabled>
+                    Xác nhận thanh toán
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/payment.js"></script>
+    <script>
+        let sessionId = null;
+        let paymentAmount = 0;
+        let paymentMethod = 'wallet';
+        let user = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!requireAuth()) return;
+            initAuth();
+            
+            user = getCurrentUser();
+            if (user) {
+                document.getElementById('user-email').textContent = user.Gmail || 'user@email.com';
+                document.getElementById('current-balance').textContent = formatCurrency(user.Amount || 0);
+                document.getElementById('wallet-balance').textContent = formatCurrency(user.Amount || 0);
+            }
+
+            sessionId = getUrlParameter('sessionId');
+            console.log('📋 SessionId from URL:', sessionId);
+            
+            if (!sessionId || sessionId === 'undefined' || sessionId === 'null') {
+                console.error('❌ Invalid sessionId from URL:', sessionId);
+                showToast('Session không hợp lệ', 'error');
+                window.location.href = '/pages/events.html';
+                return;
+            }
+
+            loadPaymentInfo();
+            
+            // Enable pay button when OTP is entered
+            document.getElementById('otp-input').addEventListener('input', (e) => {
+                const otp = e.target.value;
+                document.getElementById('pay-btn').disabled = otp.length !== 6;
+            });
+        });
+
+        async function loadPaymentInfo() {
+            // Get payment session data from sessionStorage
+            const sessionData = sessionStorage.getItem(`payment_${sessionId}`);
+            if (sessionData) {
+                try {
+                    const data = JSON.parse(sessionData);
+                    paymentAmount = data.amount || 0;
+                    document.getElementById('payment-amount').textContent = formatCurrency(paymentAmount);
+                } catch (error) {
+                    console.error('Error parsing session data:', error);
+                    showToast('Dữ liệu phiên thanh toán không hợp lệ', 'error');
+                    setTimeout(() => {
+                        window.location.href = '/pages/events.html';
+                    }, 2000);
+                }
+            } else {
+                // Session data not found in sessionStorage
+                // This might happen if user refreshed page or session expired
+                showToast('Không tìm thấy thông tin phiên thanh toán. Vui lòng tạo đơn hàng mới.', 'error');
+                setTimeout(() => {
+                    window.location.href = '/pages/events.html';
+                }, 2000);
+            }
+        }
+
+        function updatePaymentMethod(method) {
+            paymentMethod = method;
+        }
+
+        async function handleResendOTP() {
+            if (!user || !user.Gmail) {
+                showToast('Email không tồn tại', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('resend-btn');
+            btn.disabled = true;
+            btn.textContent = 'Đang gửi...';
+
+            try {
+                await sendOTP(user.Gmail);
+            } catch (error) {
+                console.error('Resend OTP error:', error);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Gửi lại mã OTP';
+            }
+        }
+
+        async function handlePayment() {
+            const otp = document.getElementById('otp-input').value;
+            if (!otp || otp.length !== 6) {
+                showToast('Vui lòng nhập mã OTP', 'error');
+                return;
+            }
+
+            // Re-check sessionId from URL in case it was lost
+            if (!sessionId) {
+                sessionId = getUrlParameter('sessionId');
+            }
+
+            if (!sessionId || sessionId === 'undefined' || sessionId === 'null') {
+                console.error('❌ Invalid sessionId:', sessionId);
+                showToast('Session không hợp lệ. Vui lòng tạo đơn hàng mới.', 'error');
+                setTimeout(() => {
+                    window.location.href = '/pages/events.html';
+                }, 2000);
+                return;
+            }
+
+            console.log('💰 Processing payment with sessionId:', sessionId);
+            console.log('💰 OTP:', otp);
+            console.log('💰 Payment method:', paymentMethod);
+
+            const btn = document.getElementById('pay-btn');
+            btn.disabled = true;
+            btn.textContent = 'Đang xử lý...';
+
+            try {
+                const response = await processPayment(sessionId, otp, paymentMethod);
+                console.log('✅ Payment response:', response);
+                
+                // Handle different response structures
+                const status = response?.status || response?.data?.status;
+                
+                if (response && status === 'success') {
+                    // Update user balance if using wallet
+                    if (paymentMethod === 'wallet' && user) {
+                        user.Amount = (user.Amount || 0) - paymentAmount;
+                        setCurrentUser(user, localStorage.getItem('token'));
+                    }
+                    
+                    // Get purchased ticket IDs from response
+                    const purchasedTicketIds = response?.data?.purchased_ticket_ids || response?.purchased_ticket_ids || [];
+                    
+                    // Redirect to ticket detail page (first ticket) or tickets page
+                    if (purchasedTicketIds.length > 0) {
+                        // Redirect to the first purchased ticket detail
+                        setTimeout(() => {
+                            window.location.href = `/pages/ticket-detail.html?id=${purchasedTicketIds[0]}`;
+                        }, 1000);
+                    } else {
+                        // If no ticket IDs, redirect to tickets page
+                        setTimeout(() => {
+                            window.location.href = '/pages/tickets.html';
+                        }, 1000);
+                    }
+                }
+            } catch (error) {
+                console.error('Payment error:', error);
+                
+                // Handle specific error cases
+                const errorMessage = error.message || '';
+                
+                if (errorMessage.includes('Payment session not found') || errorMessage.includes('session')) {
+                    showToast('Phiên thanh toán đã hết hạn hoặc không tồn tại. Vui lòng tạo đơn hàng mới.', 'error');
+                    setTimeout(() => {
+                        // Get event ID from session storage if available
+                        const sessionData = sessionStorage.getItem(`payment_${sessionId}`);
+                        if (sessionData) {
+                            const data = JSON.parse(sessionData);
+                            if (data.eventId) {
+                                window.location.href = `/pages/buy-ticket.html?id=${data.eventId}`;
+                                return;
+                            }
+                        }
+                        window.location.href = '/pages/events.html';
+                    }, 2000);
+                } else if (errorMessage.includes('expired')) {
+                    showToast('Phiên thanh toán đã hết hạn. Vui lòng tạo đơn hàng mới.', 'error');
+                    setTimeout(() => {
+                        const sessionData = sessionStorage.getItem(`payment_${sessionId}`);
+                        if (sessionData) {
+                            const data = JSON.parse(sessionData);
+                            if (data.eventId) {
+                                window.location.href = `/pages/buy-ticket.html?id=${data.eventId}`;
+                                return;
+                            }
+                        }
+                        window.location.href = '/pages/events.html';
+                    }, 2000);
+                } else if (errorMessage.includes('not pending')) {
+                    showToast('Phiên thanh toán này đã được xử lý. Vui lòng kiểm tra vé của bạn.', 'error');
+                    setTimeout(() => {
+                        window.location.href = '/pages/tickets.html';
+                    }, 2000);
+                } else {
+                    showToast(errorMessage || 'Có lỗi xảy ra khi thanh toán', 'error');
+                }
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Xác nhận thanh toán';
+            }
+        }
+
+
+        // OTP is already sent in buy-ticket.html, no need to auto-send here
+        // User can manually resend if needed using the "Gửi lại mã OTP" button
+    </script>
+</body>
+</html>
+

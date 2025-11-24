@@ -1,0 +1,334 @@
+services:
+  # MySQL Databases
+  mysql-auth:
+    image: mysql:8.0
+    container_name: mysql-auth
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: auth_db
+      MYSQL_USER: auth_user
+      MYSQL_PASSWORD: auth_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./databases/auth_db:/docker-entrypoint-initdb.d
+      - mysql-auth-data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+    networks:
+      - event-network
+
+  mysql-user:
+    image: mysql:8.0
+    container_name: mysql-user
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: user_db
+      MYSQL_USER: user_user
+      MYSQL_PASSWORD: user_password
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./databases/user_db:/docker-entrypoint-initdb.d
+      - mysql-user-data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+    networks:
+      - event-network
+
+  mysql-event:
+    image: mysql:8.0
+    container_name: mysql-event
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: event_db
+      MYSQL_USER: event_user
+      MYSQL_PASSWORD: event_password
+    ports:
+      - "3309:3306"
+    volumes:
+      - ./databases/event_db:/docker-entrypoint-initdb.d
+      - mysql-event-data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+    networks:
+      - event-network
+
+  mysql-payment:
+    image: mysql:8.0
+    container_name: mysql-payment
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: payment_db
+      MYSQL_USER: payment_user
+      MYSQL_PASSWORD: payment_password
+    ports:
+      - "3310:3306"
+    volumes:
+      - ./databases/payment_db:/docker-entrypoint-initdb.d
+      - mysql-payment-data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+    networks:
+      - event-network
+
+  mysql-notification:
+    image: mysql:8.0
+    container_name: mysql-notification
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: notification_db
+      MYSQL_USER: notification_user
+      MYSQL_PASSWORD: notification_password
+    ports:
+      - "3311:3306"
+    volumes:
+      - ./databases/notification_db:/docker-entrypoint-initdb.d
+      - mysql-notification-data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+    networks:
+      - event-network
+
+  mysql-otp:
+    image: mysql:8.0
+    container_name: mysql-otp
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: otp_db
+      MYSQL_USER: otp_user
+      MYSQL_PASSWORD: otp_password
+    ports:
+      - "3312:3306"
+    volumes:
+      - ./databases/otp_db:/docker-entrypoint-initdb.d
+      - mysql-otp-data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+    networks:
+      - event-network
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - event-network
+
+  # RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - event-network
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./backend/api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=development
+      - AUTH_SERVICE_URL=http://auth-service:3001
+      - USER_SERVICE_URL=http://user-service:3002
+      - EVENT_SERVICE_URL=http://event-service:3003
+      - PAYMENT_SERVICE_URL=http://payment-service:3004
+      - NOTIFICATION_SERVICE_URL=http://notification-service:3005
+      - OTP_SERVICE_URL=http://otp-service:3006
+    depends_on:
+      - auth-service
+      - user-service
+      - event-service
+      - payment-service
+      - notification-service
+      - otp-service
+    networks:
+      - event-network
+
+  # Auth Service
+  auth-service:
+    build:
+      context: ./backend/auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DB_HOST=mysql-auth
+      - DB_PORT=3306
+      - DB_USER=auth_user
+      - DB_PASSWORD=auth_password
+      - DB_NAME=auth_db
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - JWT_EXPIRES_IN=24h
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - USER_SERVICE_URL=http://user-service:3002
+    depends_on:
+      - mysql-auth
+      - redis
+      - user-service
+    networks:
+      - event-network
+
+  # User Service
+  user-service:
+    build:
+      context: ./backend/user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+      - DB_HOST=mysql-user
+      - DB_PORT=3306
+      - DB_USER=user_user
+      - DB_PASSWORD=user_password
+      - DB_NAME=user_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - UPLOAD_DIR=./uploads
+    volumes:
+      - ./backend/user-service/uploads:/app/uploads
+    depends_on:
+      - mysql-user
+      - redis
+    networks:
+      - event-network
+
+  # Event Service
+  event-service:
+    build:
+      context: ./backend/event-service
+      dockerfile: Dockerfile
+    container_name: event-service
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+      - PORT=3003
+      - DB_HOST=mysql-event
+      - DB_PORT=3306
+      - DB_USER=event_user
+      - DB_PASSWORD=event_password
+      - DB_NAME=event_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - UPLOAD_DIR=./uploads
+    volumes:
+      - ./backend/event-service/uploads:/app/uploads
+    depends_on:
+      - mysql-event
+      - redis
+    networks:
+      - event-network
+
+  # Payment Service
+  payment-service:
+    build:
+      context: ./backend/payment-service
+      dockerfile: Dockerfile
+    container_name: payment-service
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=development
+      - PORT=3004
+      - DB_HOST=mysql-payment
+      - DB_PORT=3306
+      - DB_USER=payment_user
+      - DB_PASSWORD=payment_password
+      - DB_NAME=payment_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672
+      - EVENT_SERVICE_URL=http://event-service:3003
+      - USER_SERVICE_URL=http://user-service:3002
+    depends_on:
+      - mysql-payment
+      - redis
+      - rabbitmq
+      - event-service
+      - user-service
+    networks:
+      - event-network
+
+  # Notification Service
+  notification-service:
+    build:
+      context: ./backend/notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    ports:
+      - "3005:3005"
+    environment:
+      - NODE_ENV=development
+      - PORT=3005
+      - DB_HOST=mysql-notification
+      - DB_PORT=3306
+      - DB_USER=notification_user
+      - DB_PASSWORD=notification_password
+      - DB_NAME=notification_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672
+      - OTP_SERVICE_URL=http://otp-service:3006
+    depends_on:
+      - mysql-notification
+      - redis
+      - rabbitmq
+      - otp-service
+    networks:
+      - event-network
+
+  # OTP Service
+  otp-service:
+    build:
+      context: ./backend/otp-service
+      dockerfile: Dockerfile
+    container_name: otp-service
+    ports:
+      - "3006:3006"
+    environment:
+      - NODE_ENV=development
+      - PORT=3006
+      - DB_HOST=mysql-otp
+      - DB_PORT=3306
+      - DB_USER=otp_user
+      - DB_PASSWORD=otp_password
+      - DB_NAME=otp_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mysql-otp
+      - redis
+    networks:
+      - event-network
+
+volumes:
+  mysql-auth-data:
+  mysql-user-data:
+  mysql-event-data:
+  mysql-payment-data:
+  mysql-notification-data:
+  mysql-otp-data:
+  redis-data:
+  rabbitmq-data:
+
+networks:
+  event-network:
+    driver: bridge
+

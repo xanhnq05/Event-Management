@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sự kiện - EventHub</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/index.html" class="logo">
+                <svg class="logo-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span>EventHub</span>
+            </a>
+            
+            <nav>
+                <a href="/index.html">Trang chủ</a>
+                <a href="/pages/events.html">Sự kiện</a>
+                <a href="/pages/favorites.html" id="favorites-link" style="display: none;">Yêu thích</a>
+                <a href="/pages/tickets.html" id="tickets-link" style="display: none;">Vé của tôi</a>
+                
+                <div id="login-link" style="display: none;">
+                    <a href="/pages/login.html" class="btn btn-secondary">Đăng nhập</a>
+                    <a href="/pages/register.html" class="btn btn-primary">Đăng ký</a>
+                </div>
+                
+                <div id="user-menu" class="user-menu" style="display: none;">
+                    <span class="user-balance">0 đ</span>
+                    <a href="/pages/wallet.html" class="btn btn-secondary">Ví</a>
+                    <a href="/pages/profile.html" class="user-name">User</a>
+                    <img id="user-avatar" class="user-avatar" src="" alt="Avatar" style="display: none;" onclick="window.location.href='/pages/profile.html'">
+                    <button onclick="handleLogout()" class="btn btn-danger">Đăng xuất</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem;">
+        <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 2rem;">Tất cả sự kiện</h1>
+
+        <!-- Search and Filter -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <input type="text" id="search-input" class="form-input" placeholder="Tìm kiếm sự kiện..." style="flex: 1;">
+                <button onclick="handleSearch()" class="btn btn-primary">Tìm kiếm</button>
+            </div>
+
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                    </svg>
+                    <span style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700);">Danh mục:</span>
+                </div>
+                <div id="categories-container" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    <button onclick="filterByCategory('')" class="btn btn-primary category-btn" data-category="">
+                        Tất cả
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Events Grid -->
+        <div id="events-container" class="grid grid-3">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Đang tải sự kiện...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>EventHub</h3>
+                <p>Nền tảng quản lý và đặt vé sự kiện hàng đầu Việt Nam</p>
+            </div>
+            <div class="footer-section">
+                <h3>Liên kết nhanh</h3>
+                <ul>
+                    <li><a href="/index.html">Trang chủ</a></li>
+                    <li><a href="/pages/events.html">Sự kiện</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 EventHub. Tất cả quyền được bảo lưu.</p>
+        </div>
+    </footer>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/events.js"></script>
+    <script>
+        let selectedCategory = '';
+        let categories = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            initAuth();
+            
+            // Load categories
+            try {
+                categories = await API.getCategories();
+                displayCategories();
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+
+            // Load events
+            const searchParam = getUrlParameter('search');
+            if (searchParam) {
+                document.getElementById('search-input').value = searchParam;
+            }
+            loadEvents(searchParam || '', selectedCategory);
+            
+            // Show/hide links based on auth
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('favorites-link').style.display = 'block';
+                document.getElementById('tickets-link').style.display = 'block';
+            }
+        });
+
+        function displayCategories() {
+            const container = document.getElementById('categories-container');
+            categories.forEach(category => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-secondary category-btn';
+                btn.textContent = category.Category_Name;
+                btn.setAttribute('data-category', category.Category_ID);
+                btn.onclick = () => filterByCategory(category.Category_ID);
+                container.appendChild(btn);
+            });
+        }
+
+        function filterByCategory(categoryId) {
+            selectedCategory = categoryId;
+            
+            // Update button styles
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if (btn.getAttribute('data-category') === categoryId) {
+                    btn.className = 'btn btn-primary category-btn';
+                } else {
+                    btn.className = 'btn btn-secondary category-btn';
+                }
+            });
+            
+            const searchTerm = document.getElementById('search-input').value;
+            loadEvents(searchTerm, selectedCategory);
+        }
+
+        function handleSearch() {
+            const searchTerm = document.getElementById('search-input').value;
+            loadEvents(searchTerm, selectedCategory);
+        }
+
+        document.getElementById('search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+    </script>
+</body>
+</html>
+
